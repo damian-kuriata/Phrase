@@ -1,5 +1,34 @@
 import { v4 as uuid } from "uuid";
 
+function replaceCharacters (text) {
+  // Array of objects in format {toReplace, replacer}
+  const rules = [
+    // Polish letters
+    {"ą":"a"},
+    {"ę":"e"},
+    {"ź":"z"},
+    {"ż":"z"},
+    {"ć":"c"},
+    {"ń":"n"},
+    {"ł":"l"},
+    {"ó":"o"},
+    {"ś":"s"},
+    // German letters
+    {"ä":"ae"},
+    {"ö":"oe"},
+    {"ü":"ue"},
+    {"ß":"ss"},
+    // Other characters
+    {".":""}
+  ];
+
+  rules.forEach(rule => {
+    const [toReplace, replacer] = Object.keys(rule);
+    text = text.replaceAll(toReplace, replacer);
+  });
+
+  return text;
+}
 export default  class Phrase {
   constructor(originalText, translatedText, id = null) {
     this.originalText = originalText;
@@ -9,27 +38,17 @@ export default  class Phrase {
 
   checkTranslation(translation, direction) {
     translation = translation.toLowerCase().trim();
-    // Replace german letters
-    translation.replaceAll("ä", "ae");
-    translation.replaceAll("ö", "oe");
-    translation.replaceAll("ü", "ue");
-    translation.replaceAll("ß", "ss");
+    translation = replaceCharacters(translation);
     if (direction !== "to" && direction !== "from") {
       throw new Error("Wrong direction");
     }
     let tmp = this;
     // Replace german letters
     tmp.translatedText = tmp.translatedText.toLowerCase().trim();
-    tmp.translatedText.replaceAll("ä", "ae");
-    tmp.translatedText.replaceAll("ö", "oe");
-    tmp.translatedText.replaceAll("ü", "ue");
-    tmp.translatedText.replaceAll("ß", "ss");
+    tmp.translatedText = replaceCharacters(tmp.translatedText);
 
     tmp.originalText = tmp.originalText.toLowerCase().trim();
-    tmp.originalText.replaceAll("ä", "ae");
-    tmp.originalText.replaceAll("ö", "oe");
-    tmp.originalText.replaceAll("ü", "ue");
-    tmp.originalText.replaceAll("ß", "ss");
+    tmp.originalText = replaceCharacters(tmp.originalText);
 
     if (direction === "to") {
       return translation === tmp.originalText;
