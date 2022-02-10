@@ -29,14 +29,22 @@ function replaceCharacters (text) {
 
   return text;
 }
+
 export default  class Phrase {
-  constructor(originalText, translatedText, id = null) {
+  #id;
+
+  constructor (originalText, translatedText, id = null, targetLanguage = null) {
     this.originalText = originalText;
     this.translatedText = translatedText;
-    this.id = id ?? uuid().toString().substr(0, 5);
+    this.#id = id ?? uuid().toString().substr(0, 5);
+    this.targetLanguage = targetLanguage;
   }
 
-  checkTranslation(translation, direction) {
+  get id () {
+    return this.#id;
+  }
+
+  checkTranslation (translation, direction) {
     translation = translation.toLowerCase().trim();
     translation = replaceCharacters(translation);
     if (direction !== "to" && direction !== "from") {
@@ -59,7 +67,7 @@ export default  class Phrase {
 
   static localStorageTag = "learner_data";
 
-  static loadFromStorage(all=true, phraseId=null) {
+  static loadFromStorage (all=true, phraseId=null) {
     let data = JSON.parse(localStorage.getItem(Phrase.localStorageTag));
     if (!data || data.length === 0) {
       // When data does not yet exist (script fruns for first time for example)
@@ -73,7 +81,7 @@ export default  class Phrase {
     }
     let allPhrases = phrases.map(phraseData => {
       return new Phrase(phraseData.originalText,
-        phraseData.translatedText, phraseData.id);
+        phraseData.translatedText, phraseData.id, phraseData.targetLanguage);
       });
     if (all) {
       // Get all phrases from storage. Note that "phraseId" param. is ignored
@@ -91,7 +99,7 @@ export default  class Phrase {
 
   /* This function saves phrase instance to local storage.
     When given phrase already exists in local storage, its replaced. */
-  static saveToStorage(phraseInstance) {
+  static saveToStorage (phraseInstance) {
     if (!(phraseInstance instanceof Phrase)) {
       throw new Error("Instance of Phrase required!");
     }
@@ -114,7 +122,7 @@ export default  class Phrase {
     let serialized = JSON.stringify(currentPhrases);
     localStorage.setItem(Phrase.localStorageTag, serialized);
   }
-  static removeFromStorage(phraseId) {
+  static removeFromStorage (phraseId) {
     // Removes phrase with given id, throws an error when does not exist.
     let phrases = Phrase.loadFromStorage();
     let indexToRemove = phrases.findIndex(ph => ph.id === phraseId);
