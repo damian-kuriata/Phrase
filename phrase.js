@@ -83,9 +83,17 @@ export default  class Phrase {
       // Load particular phrase with id from memory.
       return allPhrases.find(phrase =>{ return phrase.id === phraseId});
     }
-    // When phraseId is false, just  get random phrase.
+
+    // When phraseId is false, just  get random phrase in range [0, max - 1]
     const max = allPhrases.length, min = 0;
-    let randomIndex = Math.floor(Math.random() * (max - min) + min);
+    let randomIndex;
+
+    // Make sure prevIndex is different from randomIndex.
+    do {
+      randomIndex = Math.floor(Math.random() * (max - min) + min);
+    } while (loadFromStorage.prevIndex === randomIndex);
+
+    loadFromStorage.prevIndex = randomIndex;
     return allPhrases[randomIndex];
   }
 
