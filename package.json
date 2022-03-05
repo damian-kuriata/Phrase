@@ -11,5 +11,8 @@
     "url": "github.com/damian-kuriata/Phrase"
   },
   "author": "Damian Kuriata",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^8.3.2"
+  }
 }
