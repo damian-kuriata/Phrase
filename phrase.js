@@ -30,10 +30,12 @@ function replaceCharacters (text) {
   return text;
 }
 export default  class Phrase {
-  constructor(originalText, translatedText, id = null) {
+  constructor(originalText, translatedText, id = null, group=-1) {
     this.originalText = originalText;
     this.translatedText = translatedText;
     this.id = id ?? uuid().toString().substr(0, 5);
+    // Default group -1 indicated that Phrase does not belong to group at all.
+    this.group = group;
   }
 
   checkTranslation(translation, direction) {
@@ -76,7 +78,7 @@ export default  class Phrase {
     }
     let allPhrases = phrases.map(phraseData => {
       return new Phrase(phraseData.originalText,
-        phraseData.translatedText, phraseData.id);
+        phraseData.translatedText, phraseData.id, phraseData.group);
       });
     if (all) {
       // Get all phrases from storage. Note that "phraseId" param. is ignored
@@ -107,6 +109,7 @@ export default  class Phrase {
         // If phrase already exists, replace it.
         currentPhrases[idx].originalText = phraseInstance.originalText;
         currentPhrases[idx].translatedText = phraseInstance.translatedText;
+        currentPhrases[idx].group = phraseInstance.group;
         phraseExists = true;
       }
     }
