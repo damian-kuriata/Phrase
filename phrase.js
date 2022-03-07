@@ -62,9 +62,13 @@ export default  class Phrase {
     }
   }
 
+  toString () {
+    return Object.keys().reduce((prev, next) => prev + next + "\n", "");
+  }
+
   static localStorageTag = "learner_data";
 
-  static loadFromStorage(all=true, phraseId=null) {
+  static loadFromStorage(all=true, phraseId=null, group=-1) {
     let data = JSON.parse(localStorage.getItem(Phrase.localStorageTag));
     if (!data || data.length === 0) {
       // When data does not yet exist (script fruns for first time for example)
@@ -76,10 +80,13 @@ export default  class Phrase {
       // Only instances of Array can be retrieved.
       throw new Error("Data must be array!");
     }
-    let allPhrases = phrases.map(phraseData => {
-      return new Phrase(phraseData.originalText,
-        phraseData.translatedText, phraseData.id, phraseData.group);
-      });
+    for (let phraseData of phrases) {
+      if (phraseData.group === group) {
+        allPhrases.append(new Phrase(phraseData.originalText,
+          phraseData.translatedText, phraseData.id, phraseData.group
+        ));
+      }
+    }
     if (all) {
       // Get all phrases from storage. Note that "phraseId" param. is ignored
       return allPhrases;
