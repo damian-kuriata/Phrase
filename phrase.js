@@ -80,9 +80,10 @@ export default  class Phrase {
       // Only instances of Array can be retrieved.
       throw new Error("Data must be array!");
     }
+    let allPhrases = [];
     for (let phraseData of phrases) {
       if (phraseData.group === group) {
-        allPhrases.append(new Phrase(phraseData.originalText,
+        allPhrases.push(new Phrase(phraseData.originalText,
           phraseData.translatedText, phraseData.id, phraseData.group
         ));
       }
