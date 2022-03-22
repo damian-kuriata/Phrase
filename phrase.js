@@ -82,7 +82,7 @@ export default  class Phrase {
     }
     let allPhrases = [];
     for (let phraseData of phrases) {
-      if (phraseData.group === group) {
+      if (group === -1 || phraseData.group === group) {
         allPhrases.push(new Phrase(phraseData.originalText,
           phraseData.translatedText, phraseData.id, phraseData.group
         ));
@@ -145,6 +145,8 @@ export default  class Phrase {
 }
 
 function haveMutualSections (first, second, separator=",") {
+  // A section is considered data separated by separator in phrase.
+  // i.e. abc,def. In this example, we have two sections: abc and def
   let splitFirst = first.split(separator);
   let splitSecond = second.split(separator);
 
